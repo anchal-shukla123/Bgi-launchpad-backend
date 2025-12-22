@@ -1,0 +1,7 @@
+{
+  "type": "java",
+  "request": "launch",
+  "name": "BGI_LAUNCHPAD",
+  "mainClass": "com.bgi.launchpad.BgiLaunchpadApplication",
+  "envFile": "${workspaceFolder}/.env"
+}
