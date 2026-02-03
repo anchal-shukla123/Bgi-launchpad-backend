@@ -1,33 +1,11 @@
-version: "3.8"
-
 services:
-  mysql:
-    image: mysql:8
-    container_name: bgi-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: bgi_launchpad
-    ports:
-      - "3307:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - bgi-net
-
   app:
     image: anchal2005/bgi-launchpad:latest
     container_name: bgi-launchpad
     restart: always
     ports:
       - "8080:8080"
-    depends_on:
-      - mysql
-    networks:
-      - bgi-net
-
-networks:
-  bgi-net:
-
-volumes:
-  mysql_data:
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://ep-floral-violet-ahf3g0v8-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      SPRING_DATASOURCE_USERNAME: neondb_owner
+      SPRING_DATASOURCE_PASSWORD: npg_9dQ6zUVKTuPL
