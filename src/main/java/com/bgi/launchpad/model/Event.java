@@ -1,44 +1,95 @@
 package com.bgi.launchpad.model;
 
+import com.bgi.launchpad.model.enums.EventStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Event entity for campus events with registration tracking.
+ */
 @Entity
-@Table(name = "Events")
+@Table(name = "events",
+       indexes = {
+           @Index(name = "idx_event_date", columnList = "event_date"),
+           @Index(name = "idx_status", columnList = "status"),
+           @Index(name = "idx_committee", columnList = "committee_id")
+       })
 public class Event {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(min = 5, max = 200, message = "Title must be between 5 and 200 characters")
+    @Column(nullable = false, length = 200)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @NotBlank(message = "Description is required")
+    @Size(max = 5000, message = "Description cannot exceed 5000 characters")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
+    @NotBlank(message = "Venue is required")
+    @Size(max = 200, message = "Venue cannot exceed 200 characters")
+    @Column(nullable = false, length = 200)
     private String venue;
 
-    @ManyToOne
-    @JoinColumn(name = "committee_id")
-    private Committee committee;
+    @Column(name = "committee_id")
+    private Long committeeId;
 
-    @Column(name = "event_date")
+    @NotNull(message = "Event date is required")
+    @Column(name = "event_date", nullable = false)
     private LocalDate eventDate;
 
-    @Column(name = "start_time")
+    @NotNull(message = "Start time is required")
+    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
 
-    @Column(name = "end_time")
+    @NotNull(message = "End time is required")
+    @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
 
-    private Long participant;
+    @Column(name = "registration_deadline")
+    private LocalDateTime registrationDeadline;
 
-    @Column(name = "total_participant")
-    private Long totalParticipant;
+    @NotNull(message = "Event status is required")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private EventStatus status = EventStatus.UPCOMING;
 
-    // ===== Getters & Setters =====
+    @Min(value = 0, message = "Participant count cannot be negative")
+    @Column(name = "current_participants")
+    private Integer currentParticipants = 0;
 
+    @Min(value = 1, message = "Maximum participants must be at least 1")
+    @Column(name = "max_participants")
+    private Integer maxParticipants;
+
+    @Column(name = "registration_link", length = 500)
+    private String registrationLink;
+
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
+    // Audit fields (if BaseEntity is not available)
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -71,13 +122,12 @@ public class Event {
         this.venue = venue;
     }
 
-    // ✅ CORRECT FK GETTER / SETTER
-    public Committee getCommittee() {
-        return committee;
+    public Long getCommitteeId() {
+        return committeeId;
     }
 
-    public void setCommittee(Committee committee) {
-        this.committee = committee;
+    public void setCommitteeId(Long committeeId) {
+        this.committeeId = committeeId;
     }
 
     public LocalDate getEventDate() {
@@ -104,19 +154,107 @@ public class Event {
         this.endTime = endTime;
     }
 
-    public Long getParticipant() {
-        return participant;
+    public LocalDateTime getRegistrationDeadline() {
+        return registrationDeadline;
     }
 
-    public void setParticipant(Long participant) {
-        this.participant = participant;
+    public void setRegistrationDeadline(LocalDateTime registrationDeadline) {
+        this.registrationDeadline = registrationDeadline;
     }
 
-    public Long getTotalParticipant() {
-        return totalParticipant;
+    public EventStatus getStatus() {
+        return status;
     }
 
-    public void setTotalParticipant(Long totalParticipant) {
-        this.totalParticipant = totalParticipant;
+    public void setStatus(EventStatus status) {
+        this.status = status;
+    }
+
+    public Integer getCurrentParticipants() {
+        return currentParticipants;
+    }
+
+    public void setCurrentParticipants(Integer currentParticipants) {
+        this.currentParticipants = currentParticipants;
+    }
+
+    public Integer getMaxParticipants() {
+        return maxParticipants;
+    }
+
+    public void setMaxParticipants(Integer maxParticipants) {
+        this.maxParticipants = maxParticipants;
+    }
+
+    public String getRegistrationLink() {
+        return registrationLink;
+    }
+
+    public void setRegistrationLink(String registrationLink) {
+        this.registrationLink = registrationLink;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    /**
+     * Check if event is full
+     */
+    public boolean isFull() {
+        return maxParticipants != null && currentParticipants >= maxParticipants;
+    }
+
+    /**
+     * Check if registration is still open
+     */
+    public boolean isRegistrationOpen() {
+        return registrationDeadline == null || LocalDateTime.now().isBefore(registrationDeadline);
+    }
+
+    /**
+     * Increment participant count
+     */
+    public void incrementParticipants() {
+        if (this.currentParticipants == null) {
+            this.currentParticipants = 0;
+        }
+        this.currentParticipants++;
+    }
+
+    /**
+     * Validate that end time is after start time
+     */
+    @AssertTrue(message = "End time must be after start time")
+    public boolean isEndTimeValid() {
+        return endTime == null || startTime == null || endTime.isAfter(startTime);
     }
 }
