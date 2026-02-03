@@ -26,8 +26,8 @@
 
     <dependencies>
         <!-- ==========================================
-             SPRING BOOT CORE
-             ========================================== -->
+        SPRING BOOT CORE
+        ========================================== -->
 
         <!-- Spring Boot Web (REST API) -->
         <dependency>
@@ -48,9 +48,9 @@
         </dependency>
 
         <!-- ==========================================
-             SECURITY - CRITICAL!
-             Original code had NO security!
-             ========================================== -->
+        SECURITY - CRITICAL!
+        Original code had NO security!
+        ========================================== -->
 
         <!-- Spring Security -->
         <dependency>
@@ -78,13 +78,19 @@
         </dependency>
 
         <!-- ==========================================
-             DATABASE
-             ========================================== -->
+        DATABASE
+        ========================================== -->
 
         <!-- MySQL Driver -->
-        <dependency>
+        <!-- <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency> -->
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
 
@@ -96,9 +102,9 @@
         </dependency>
 
         <!-- ==========================================
-             API DOCUMENTATION - NEW!
-             Original code had NO documentation!
-             ========================================== -->
+        API DOCUMENTATION - NEW!
+        Original code had NO documentation!
+        ========================================== -->
 
         <!-- Swagger/OpenAPI 3.0 -->
         <dependency>
@@ -108,8 +114,8 @@
         </dependency>
 
         <!-- ==========================================
-             UTILITIES
-             ========================================== -->
+        UTILITIES
+        ========================================== -->
 
         <!-- Lombok (Reduce boilerplate code) -->
         <dependency>
@@ -132,8 +138,8 @@
         </dependency>
 
         <!-- ==========================================
-             MONITORING & HEALTH CHECKS - NEW!
-             ========================================== -->
+        MONITORING & HEALTH CHECKS - NEW!
+        ========================================== -->
 
         <!-- Spring Boot Actuator -->
         <dependency>
@@ -148,8 +154,8 @@
         </dependency>
 
         <!-- ==========================================
-             FILE UPLOAD (Optional - for images)
-             ========================================== -->
+        FILE UPLOAD (Optional - for images)
+        ========================================== -->
 
         <!-- Apache Commons FileUpload -->
         <dependency>
@@ -159,8 +165,8 @@
         </dependency>
 
         <!-- ==========================================
-             EMAIL (Optional - for notifications)
-             ========================================== -->
+        EMAIL (Optional - for notifications)
+        ========================================== -->
 
         <!-- Spring Boot Mail
         <dependency>
@@ -170,9 +176,9 @@
         -->
 
         <!-- ==========================================
-             TESTING - COMPREHENSIVE!
-             Original code had NO tests!
-             ========================================== -->
+        TESTING - COMPREHENSIVE!
+        Original code had NO tests!
+        ========================================== -->
 
         <!-- Spring Boot Test -->
         <dependency>
@@ -210,8 +216,8 @@
         </dependency>
 
         <!-- ==========================================
-             DEVELOPMENT TOOLS
-             ========================================== -->
+        DEVELOPMENT TOOLS
+        ========================================== -->
 
         <!-- Spring Boot DevTools (Hot reload) -->
         <dependency>
@@ -291,8 +297,8 @@
     </build>
 
     <!-- ==========================================
-         PROFILES
-         ========================================== -->
+    PROFILES
+    ========================================== -->
     <profiles>
         <!-- Development Profile -->
         <profile>
